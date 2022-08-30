@@ -1,0 +1,23 @@
+# Hourly scraping
+name: test curl
+
+# Controls when the action will run.
+on:
+  schedule:
+    - cron:  "0 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  autoscrape:
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - shell: bash
+        run: |
+          curl https://transparency.apg.at/transparency-api/api/v1/Download/AGPT/German/M15/2022-08-29T000000/2022-08-30T000000/AGPT_2022-08-28T22_00_00Z_2022-08-29T22_00_00Z_15M_de_2022-08-29T15_40_08Z.csv
+          echo "hi"
+          cat test.csv
+
+
