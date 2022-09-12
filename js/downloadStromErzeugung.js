@@ -1,8 +1,8 @@
 import fs from "fs";
 import * as d3 from "d3";
+import _ from "lodash";
 import node_fetch from "node-fetch";
-import write from "./write.js";
-import { json } from "d3";
+import { group } from "console";
 global.fetch = node_fetch;
 
 // Formatting Date functions
@@ -40,10 +40,29 @@ export default async function donwloadStromErzeugung() {
     };
   });
 
-  console.log(`data: `, data);
+  let groupedByDate = _.groupBy(data, (d) => d.date);
+  let keys = Object.keys(groupedByDate);
 
-  // daily data for each category
-  let dataByDay = d3.group(data, (d) => d.date);
+  let res = keys.map((d) => {
+    let valsOneDay = groupedByDate[d];
+
+    // make the base
+    let types = Object.keys(valsOneDay[0]);
+    let dateObj = types.reduce((acc, curr) => {
+      acc[curr] = [];
+      return acc;
+    }, {});
+
+    valsOneDay.forEach((d, i) => {
+      let typesOneTime = Object.keys(d);
+      typesOneTime.forEach((t) => {
+        let val = d[t];
+        dateObj[t][i] = val;
+      });
+    });
+
+    return dateObj;
+  });
 }
 
 donwloadStromErzeugung();
