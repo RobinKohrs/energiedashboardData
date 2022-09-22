@@ -1,5 +1,4 @@
 library(tidyverse)
-library(here)
 library(glue)
 library(readxl)
 
@@ -40,7 +39,7 @@ data %>%
 
 
 # write out ---------------------------------------------------------------
-output_file = here("output/natural_gas_russia_europe.csv")
+output_file = "output/natural_gas_russia_europe.csv"
 write_file(data, output_file)
 
 
