@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import _ from "lodash";
 import node_fetch from "node-fetch";
 import { createObjectCsvWriter } from "csv-writer";
+import { symbolSquare } from "d3";
 
 global.fetch = node_fetch;
 
@@ -16,7 +17,6 @@ const makeYear = (date) => date.getFullYear();
 export default async function donwloadStromErzeugung() {
   //   let outDir = process.env.CACHE_DIR + "/international";
   const outDir = "output";
-  const outPath = `${outDir}/stromerzeugungOE.csv`;
 
   if (!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir);
@@ -27,17 +27,23 @@ export default async function donwloadStromErzeugung() {
   const MONTH = makeMonth(TODAY);
   const YEAR = makeYear(TODAY);
   const DATE_FORMATTED = `${YEAR}-${MONTH}-${DAY}`;
+  const START_DATE = "2021-01-01";
+  const START_DATE_M_ONE = "2020-12-31";
 
   let filename =
     outDir + "/" + DATE_FORMATTED.toString().replace(/-/g, "_") + ".csv";
 
-  const url = `https://transparency.apg.at/transparency-api/api/v1/Download/AGPT/German/M15/2022-08-01T000000/${DATE_FORMATTED}T000000/AGPT_2022-08-01T22_00_00Z_${DATE_FORMATTED}T22_00_00Z_60M_de_${DATE_FORMATTED}T15_40_08Z.csv`;
-
-  // if file already exists do not fetch it!
+  // if file already exists do not request it
   if (fs.existsSync(filename)) {
     console.log(`file for ${DATE_FORMATTED} already exists`);
     return;
   }
+
+  // url for
+  // const url = `https://transparency.apg.at/transparency-api/api/v1/Download/AGPT/German/M15/2021-01-01T000000/${DATE_FORMATTED}T000000/AGPT_2020-12-31T22_00_00Z_${DATE_FORMATTED}T22_00_00Z_60M_de_${DATE_FORMATTED}T15_40_08Z.csv`;
+  const url = `https://transparency.apg.at/transparency-api/api/v1/Download/AGPT/German/M15/${START_DATE}T000000/${DATE_FORMATTED}T000000/AGPT_${START_DATE_M_ONE}T23_00_00Z_${DATE_FORMATTED}T22_00_00Z_60M_de_${DATE_FORMATTED}T15_40_08Z.csv`;
+  console.log(`url`, url);
+  // https://transparency.apg.at/transparency-api/api/v1/Download/AGPT/German/M60/2021-01-01T000000/2022-09-20T000000/0dfa0bab-bffe-467e-aa21-211dad325f7b/AGPT_2020-12-31T23_00_00Z_2022-09-19T22_00_00Z_60M_de_2022-09-19T12_37_02Z.csv?
 
   // Fetch data
   let data;
@@ -123,7 +129,7 @@ export default async function donwloadStromErzeugung() {
     header: r0,
   });
 
-  csvWriter.writeRecords(final).then(() => console.log("written"));
+  csvWriter.writeRecords(final).then(() => console.log("data written"));
 }
 
 donwloadStromErzeugung();
