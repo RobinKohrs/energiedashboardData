@@ -1,6 +1,7 @@
 library(tidyverse)
 library(glue)
 library(readxl)
+library(here)
 
 # url ---------------------------------------------------------------------
 url = "https://www.bruegel.org/sites/default/files/2022-09/gas_tracker_update_.zip"
@@ -42,7 +43,7 @@ data %>%
 
 
 # write out ---------------------------------------------------------------
-output_file = "output/natural_gas_russia_europe.csv"
+output_file = here("output/natural_gas_russia_europe.csv")
 write_file(data, output_file)
 
 
